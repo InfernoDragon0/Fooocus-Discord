@@ -6,7 +6,7 @@ Generate AI Art via a Fooocus server hosted anywhere, calling it through your di
 
 ### Requirements
 - Fooocus Server (you can download and self host one via [Fooocus Github](https://github.com/lllyasviel/Fooocus))
-- Discord Bot Token, Client ID and/or Server ID
+- Discord Bot Token, Client ID and/or Server ID. Follow the [instructions here](https://discordjs.guide/preparations/setting-up-a-bot-application.html) to get a Bot Token
 
 ### How to run
 - Use the ```.env.example``` file and rename it to ```.env```
