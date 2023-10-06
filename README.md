@@ -4,8 +4,6 @@ Generate AI Art via a Fooocus server hosted anywhere, calling it through your di
 ![image](https://raw.githubusercontent.com/InfernoDragon0/Fooocus-Discord/master/output/1692325614242.png)
 > Quality: False, Style: 1, Prompt: cat with sunglasses
 
-#### More Examples
-
 ### Requirements
 - Fooocus Server (you can download and self host one via [Fooocus Github](https://github.com/lllyasviel/Fooocus))
 - Discord Bot Token, Client ID and/or Server ID. Follow the [instructions here](https://discordjs.guide/preparations/setting-up-a-bot-application.html) to get a Bot Token
@@ -26,3 +24,12 @@ Generate AI Art via a Fooocus server hosted anywhere, calling it through your di
 - ```negative``` to set negative prompt 
 
 Outputs are also stored in the discord bot folder ```output``` as well.
+
+#### More Examples
+> With Seed
+
+![image](https://raw.githubusercontent.com/InfernoDragon0/Fooocus-Discord/master/samples/seed.png)
+
+> With Seed & Negative
+
+![image](https://raw.githubusercontent.com/InfernoDragon0/Fooocus-Discord/master/samples/negative.png) 
