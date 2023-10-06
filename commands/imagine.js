@@ -8,17 +8,24 @@ let running = false;
 let ADVANCED_CHECKBOX = "#component-14 > label > input";
 let QUALITY_RADIOBOX = "[data-testid='Quality-radio-label']";
 let IMAGE_AMOUNT = "[data-testid='number-input']";
+let SEED_BOX = "#component-38 > label > input"
+let SEED_INPUT = "#component-39 > label > input"
 
-async function run (withPrompt, styleId = 1, quality = false) {
+async function run (withPrompt, styleId = 1, quality = false, seedCustom = -1) {
 	if (running) {
 		return "Error: Already running"
 	}
 	if (styleId == null) {
 		styleId = 1
 	}
+
+	if (seedCustom == null) {
+		seedCustom = -1
+	}
+
 	running = true;
 
-    const browser = await puppeteer.launch({});
+    const browser = await puppeteer.launch({headless:false});
 	const page = await browser.newPage();
 	await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(url);
@@ -43,9 +50,6 @@ async function run (withPrompt, styleId = 1, quality = false) {
 
 	// //input the style of image to generate
 	try {
-		// await page.waitForSelector("#component-57 > div.tab-nav.scroll-hide.svelte-kqij2n > button:nth-child(2)")
-		// await page.$eval("#component-57 > div.tab-nav.scroll-hide.svelte-kqij2n > button:nth-child(2)")
-
 		await page.waitForSelector("#component-42 > div.wrap.svelte-1qxcj04 > label:nth-child(" + styleId + ")");
 		await page.$eval("#component-42 > div.wrap.svelte-1qxcj04 > label:nth-child(" + styleId + ")", (e) => {
 			e.click()
@@ -55,13 +59,27 @@ async function run (withPrompt, styleId = 1, quality = false) {
 		console.log("button not found")
 	}
 
+	if (seedCustom != -1) {
+		console.log("setting seed to: " + seedCustom)
+		await page.waitForSelector(SEED_BOX);
+		await page.$eval(SEED_BOX, (e) => {
+			e.click()
+		})
+
+		await page.waitForSelector(SEED_INPUT);
+		await page.$eval(SEED_INPUT, (e, seedCustom) => {
+			// e.click()
+			e.value = seedCustom
+		}, seedCustom)
+	}
+
+
 	//change the amount of images generated
 	await page.waitForSelector(IMAGE_AMOUNT)
 	await page.click(IMAGE_AMOUNT)
 	await page.keyboard.press('Backspace');
 	await page.type(IMAGE_AMOUNT, "1");
 
-	
 	//click button to generate, wait for image to generate
 	await page.click("#component-10");
 	
@@ -75,6 +93,23 @@ async function run (withPrompt, styleId = 1, quality = false) {
 		const img = document.querySelector('#component-5 > div.preview.svelte-1a6pxdl > img');
 		return img.src;
 	});
+
+	let seed = -1
+	//get the seed if possible
+	try {
+		await page.waitForSelector(SEED_BOX);
+		await page.$eval(SEED_BOX, (e) => {
+			e.click()
+		})
+		await page.waitForSelector(SEED_INPUT);
+		seed = await page.$eval(SEED_INPUT, (e) => {
+			return e.value;
+		});
+	}
+	catch (e) {
+		console.log("button not found")
+	}
+
 	//download the image
 	const viewSource = await page.goto(src);
 	//as png file
@@ -86,7 +121,10 @@ async function run (withPrompt, styleId = 1, quality = false) {
 	running = false;
 
 	//remove ./output/ from the filename before returning
-	return filename
+	return {
+		filename: filename, 
+		seed: seed
+	}
 }
 
 module.exports = {
@@ -95,7 +133,8 @@ module.exports = {
 		.setDescription('Generates an image based on your text')
 		.addStringOption(option => option.setName('prompt').setDescription('Your prompt for the image to generate').setRequired(true))
 		.addStringOption(option => option.setName('style').setDescription('The style of image to generate (1 to 105').setRequired(false))
-		.addBooleanOption(option => option.setName('quality').setDescription('Set to true to run at Quality instead of Speed').setRequired(false)),
+		.addBooleanOption(option => option.setName('quality').setDescription('Set to true to run at Quality instead of Speed').setRequired(false))
+		.addStringOption(option => option.setName('seed').setDescription('The seed to use for the image').setRequired(false)),
 	async execute(interaction) {
         //time the start and end
 		let repl = 'Generating for prompt: ' + interaction.options.getString('prompt')
@@ -107,14 +146,15 @@ module.exports = {
 
 		const start = new Date().getTime();
 		
-		const image = await run(interaction.options.getString('prompt'), interaction.options.getString('style'), interaction.options.getBoolean('quality'));
+		const imagejson = await run(interaction.options.getString('prompt'), interaction.options.getString('style'), interaction.options.getBoolean('quality'), interaction.options.getString('seed'));
 		const name = interaction.user.username;
 
-		if (image == "Error: Already running") {
+		if (imagejson == "Error: Already running") {
 			await interaction.editReply("Please wait for the previous image to finish generating!");
 			return
 		}
-			
+		const image = imagejson.filename;
+		const seed = imagejson.seed;
 		//attachment builder
 		const attachment = new AttachmentBuilder(image);
 		
@@ -128,7 +168,7 @@ module.exports = {
         .setColor("Random")
         // .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
         .setAuthor({ name: name, iconURL: interaction.user.avatarURL() })
-        .setTitle(`${interaction.options.getString('prompt')}: ${total} seconds`)
+        .setTitle(`${interaction.options.getString('prompt')}: ${total} seconds [Seed: ${seed}]`)
         .setImage(`attachment://${image.substring(9)}`)
         .setFooter({ text: `${name} used /imagine`, iconURL: interaction.user.avatarURL() })
         .setTimestamp()
