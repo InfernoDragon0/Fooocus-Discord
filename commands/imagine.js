@@ -4,24 +4,17 @@ const fs = require('fs');
 
 const url = process.env.URL;
 let running = false;
-// let browser
-// let page
 
-// //make instance check if browser and page already exists
-// //if not, create new instance
-// //if exists, use existing instance
-// async function getInstance() {
-// 	if (browser == null || page == null) {
-// 		browser = await puppeteer.launch({headless: false});
-// 		page = await browser.newPage();
-// 		await page.goto(url);
-// 	}
-// 	return page
-// }
+let ADVANCED_CHECKBOX = "#component-14 > label > input";
+let QUALITY_RADIOBOX = "[data-testid='Quality-radio-label']";
+let IMAGE_AMOUNT = "[data-testid='number-input']";
 
 async function run (withPrompt, styleId = 1, quality = false) {
 	if (running) {
 		return "Error: Already running"
+	}
+	if (styleId == null) {
+		styleId = 1
 	}
 	running = true;
 
@@ -33,36 +26,46 @@ async function run (withPrompt, styleId = 1, quality = false) {
 	await page.type("[data-testid='textbox']", withPrompt);
 	
 	//open advanced tab by checking the checkbox
-	await page.waitForSelector("#component-12 > label > input");
-	await page.click("#component-12 > label > input");
+	await page.waitForSelector(ADVANCED_CHECKBOX);
+	await page.click(ADVANCED_CHECKBOX);
 
 	//input the number of image to genearte
 	// await page.waitForSelector("#component-17 > div.wrap.svelte-1cl284s > div > input"); 
 	// await page.type("#component-17 > div.wrap.svelte-1cl284s > div > input", "1");
 	//set to quality
 	if (quality) {
-		await page.waitForSelector("#component-15 > div.wrap.svelte-1p9xokt > label:nth-child(2)")
-		await page.$eval("#component-15 > div.wrap.svelte-1p9xokt > label:nth-child(2)", (e) => {
+		await page.waitForSelector(QUALITY_RADIOBOX)
+		await page.$eval(QUALITY_RADIOBOX, (e) => {
 			e.click()
 		})
 	}
+	console.log("styling with id: " + styleId)
 
 	// //input the style of image to generate
 	try {
 		// await page.waitForSelector("#component-57 > div.tab-nav.scroll-hide.svelte-kqij2n > button:nth-child(2)")
 		// await page.$eval("#component-57 > div.tab-nav.scroll-hide.svelte-kqij2n > button:nth-child(2)")
 
-		await page.waitForSelector("#component-23 > div.wrap.svelte-1p9xokt > label:nth-child(" + styleId + ")");
-		await page.$eval("#component-23 > div.wrap.svelte-1p9xokt > label:nth-child(" + styleId + ")", (e) => {
+		await page.waitForSelector("#component-42 > div.wrap.svelte-1qxcj04 > label:nth-child(" + styleId + ")");
+		await page.$eval("#component-42 > div.wrap.svelte-1qxcj04 > label:nth-child(" + styleId + ")", (e) => {
 			e.click()
 		})
 	}
 	catch (e) {
 		console.log("button not found")
 	}
+
+	//change the amount of images generated
+	await page.waitForSelector(IMAGE_AMOUNT)
+	await page.click(IMAGE_AMOUNT)
+	await page.keyboard.press('Backspace');
+	await page.type(IMAGE_AMOUNT, "1");
+
 	
 	//click button to generate, wait for image to generate
 	await page.click("#component-10");
+	
+	//nth child to change to for loop
 	await page.waitForSelector("#component-5 > div.grid-wrap.svelte-1a6pxdl > div > button:nth-child(1)", {timeout:0});
 	await page.click("#component-5 > div.grid-wrap.svelte-1a6pxdl > div > button:nth-child(1)");
 	await page.waitForSelector("#component-5 > div.preview.svelte-1a6pxdl > img");
