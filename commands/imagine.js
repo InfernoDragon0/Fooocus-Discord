@@ -10,8 +10,9 @@ let QUALITY_RADIOBOX = "[data-testid='Quality-radio-label']";
 let IMAGE_AMOUNT = "[data-testid='number-input']";
 let SEED_BOX = "#component-38 > label > input"
 let SEED_INPUT = "#component-39 > label > input"
+let NEGATIVE_INPUT = "#component-37 > label > textarea"
 
-async function run (withPrompt, styleId = 1, quality = false, seedCustom = -1) {
+async function run (withPrompt, styleId = 1, quality = false, seedCustom = -1, negative = null) {
 	if (running) {
 		return "Error: Already running"
 	}
@@ -67,12 +68,21 @@ async function run (withPrompt, styleId = 1, quality = false, seedCustom = -1) {
 		})
 
 		await page.waitForSelector(SEED_INPUT);
-		await page.$eval(SEED_INPUT, (e, seedCustom) => {
-			// e.click()
-			e.value = seedCustom
-		}, seedCustom)
+		// await page.$eval(SEED_INPUT, (e, seedCustom) => {
+		// 	// e.click()
+		// 	e.value = seedCustom
+		// }, seedCustom)
+		await page.click(SEED_INPUT, {clickCount: 3})
+		await page.type(SEED_INPUT, seedCustom);
+
 	}
 
+	if (negative != null) {
+		await page.waitForSelector(NEGATIVE_INPUT);
+		
+		await page.click(NEGATIVE_INPUT, {clickCount: 3})
+		await page.type(NEGATIVE_INPUT, negative);
+	}
 
 	//change the amount of images generated
 	await page.waitForSelector(IMAGE_AMOUNT)
@@ -134,7 +144,8 @@ module.exports = {
 		.addStringOption(option => option.setName('prompt').setDescription('Your prompt for the image to generate').setRequired(true))
 		.addStringOption(option => option.setName('style').setDescription('The style of image to generate (1 to 105').setRequired(false))
 		.addBooleanOption(option => option.setName('quality').setDescription('Set to true to run at Quality instead of Speed').setRequired(false))
-		.addStringOption(option => option.setName('seed').setDescription('The seed to use for the image').setRequired(false)),
+		.addStringOption(option => option.setName('seed').setDescription('The seed to use for the image').setRequired(false))
+		.addStringOption(option => option.setName('negative').setDescription('Negative prompt for the image').setRequired(false)),
 	async execute(interaction) {
         //time the start and end
 		let repl = 'Generating for prompt: ' + interaction.options.getString('prompt')
@@ -146,7 +157,7 @@ module.exports = {
 
 		const start = new Date().getTime();
 		
-		const imagejson = await run(interaction.options.getString('prompt'), interaction.options.getString('style'), interaction.options.getBoolean('quality'), interaction.options.getString('seed'));
+		const imagejson = await run(interaction.options.getString('prompt'), interaction.options.getString('style'), interaction.options.getBoolean('quality'), interaction.options.getString('seed'), interaction.options.getString('negative'));
 		const name = interaction.user.username;
 
 		if (imagejson == "Error: Already running") {
@@ -168,7 +179,7 @@ module.exports = {
         .setColor("Random")
         // .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
         .setAuthor({ name: name, iconURL: interaction.user.avatarURL() })
-        .setTitle(`${interaction.options.getString('prompt')}: ${total} seconds [Seed: ${seed}]`)
+        .setTitle(`${interaction.options.getString('prompt')} ${ interaction.options.getString('negative') ? "(-" + interaction.options.getString('negative') + ")": ""}: ${total} seconds [Seed: ${seed}]`)
         .setImage(`attachment://${image.substring(9)}`)
         .setFooter({ text: `${name} used /imagine`, iconURL: interaction.user.avatarURL() })
         .setTimestamp()

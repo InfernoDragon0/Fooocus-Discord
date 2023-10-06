@@ -4,6 +4,8 @@ Generate AI Art via a Fooocus server hosted anywhere, calling it through your di
 ![image](https://raw.githubusercontent.com/InfernoDragon0/Fooocus-Discord/master/output/1692325614242.png)
 > Quality: False, Style: 1, Prompt: cat with sunglasses
 
+#### More Examples
+
 ### Requirements
 - Fooocus Server (you can download and self host one via [Fooocus Github](https://github.com/lllyasviel/Fooocus))
 - Discord Bot Token, Client ID and/or Server ID. Follow the [instructions here](https://discordjs.guide/preparations/setting-up-a-bot-application.html) to get a Bot Token
@@ -15,4 +17,12 @@ Generate AI Art via a Fooocus server hosted anywhere, calling it through your di
 - Run the bot with ```npm run start```
 
 ### Command
-- ```/imagine```: write a prompt to generate an image. Optionals are ```style``` from ```1 to 105``` and ```quality```, set ```quality``` to ```true``` for high quality images. Outputs are also stored in the discord bot folder ```output``` as well.
+- ```/imagine```: write a prompt to generate an image. 
+
+#### Optionals
+- ```style``` from ```1 to 105```
+- ```quality``` to ```true``` for high quality images.
+- ```seed``` to set a custom seed for the image generation
+- ```negative``` to set negative prompt 
+
+Outputs are also stored in the discord bot folder ```output``` as well.
