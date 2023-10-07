@@ -26,7 +26,7 @@ async function run (withPrompt, styleId = 1, quality = false, seedCustom = -1, n
 
 	running = true;
 
-    const browser = await puppeteer.launch({headless:false});
+    const browser = await puppeteer.launch({});
 	const page = await browser.newPage();
 	await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(url);
