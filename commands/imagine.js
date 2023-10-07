@@ -148,9 +148,24 @@ module.exports = {
 		.addStringOption(option => option.setName('negative').setDescription('Negative prompt for the image').setRequired(false)),
 	async execute(interaction) {
         //time the start and end
-		let repl = 'Generating for prompt: ' + interaction.options.getString('prompt')
+		let repl = 'Generating for Prompt: `' + interaction.options.getString('prompt') + "`"
+		
+		if (interaction.options.getString('negative')) {
+			repl += ' `(-' + interaction.options.getString('negative') + ")`"
+		}
+
+		repl += '\nOptions:'
+
+		if (interaction.options.getString('style')) {
+			repl += ' `Style: ' + interaction.options.getString('style') + "`,"
+		}
+
+		if (interaction.options.getString('seed')) {
+			repl += ' `Seed: ' + interaction.options.getString('seed') + "`,"
+		}
+		
 		if (interaction.options.getBoolean('quality')) {
-			repl += ' [High Quality]'
+			repl += ' `High Quality`,'
 		}
 		
 		await interaction.reply(repl);
@@ -179,7 +194,8 @@ module.exports = {
         .setColor("Random")
         // .setAuthor({ name: interaction.user.username, iconURL: interaction.user.avatarURL() })
         .setAuthor({ name: name, iconURL: interaction.user.avatarURL() })
-        .setTitle(`${interaction.options.getString('prompt')} ${ interaction.options.getString('negative') ? "(-" + interaction.options.getString('negative') + ")": ""}: ${total} seconds [Seed: ${seed}]`)
+        .setTitle(`${interaction.options.getString('prompt')} ${ interaction.options.getString('negative') ? "(-" + interaction.options.getString('negative') + ")": ""}`)
+		.setDescription(`Took ${total} seconds, using seed: ${seed}`)
         .setImage(`attachment://${image.substring(9)}`)
         .setFooter({ text: `${name} used /imagine`, iconURL: interaction.user.avatarURL() })
         .setTimestamp()
