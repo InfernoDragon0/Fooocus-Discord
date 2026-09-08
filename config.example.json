@@ -1,0 +1,50 @@
+{
+  "fooocus": {
+    "baseUrl": "http://127.0.0.1:7865",
+    "autoStart": true,
+    "installDir": "E:\\Fooocus_win64_2-5-0\\Fooocus_win64_2-5-0",
+    "pythonExe": "python_embeded\\python.exe",
+    "launchScript": "Fooocus\\launch.py",
+    "preset": null,
+    "extraArgs": [],
+    "startupTimeoutSec": 300,
+    "idleTimeoutSec": 180,
+    "jobTimeoutSec": 1200,
+    "healthIntervalSec": 15,
+    "restartOnCrash": true,
+    "outputsDir": "E:\\Fooocus_win64_2-5-0\\Fooocus_win64_2-5-0\\Fooocus\\outputs"
+  },
+  "queue": {
+    "maxPendingPerUser": 1,
+    "maxQueueSize": 20
+  },
+  "generation": {
+    "defaultCount": 2,
+    "maxCount": 4,
+    "defaultPerformance": "Speed",
+    "allowedModels": null,
+    "defaultStyles": [],
+    "presetLoras": false
+  },
+  "discord": {
+    "progressEditIntervalMs": 2500,
+    "maxUploadBytes": 10000000,
+    "previewJpegQuality": 70,
+    "maxInputBytes": 8000000
+  },
+  "gpu": {
+    "powerLimitWatts": null,
+    "method": "nvidia-smi",
+    "elevate": "auto",
+    "taskNames": {
+      "apply": "MeowyFooocusPowerLimit",
+      "restore": "MeowyFooocusPowerRestore"
+    }
+  },
+  "tray": {
+    "enabled": true
+  },
+  "log": {
+    "level": "info"
+  }
+}

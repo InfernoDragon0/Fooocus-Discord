@@ -130,3 +130,6 @@ dist
 .pnp.*
 
 output/
+config.json
+data/
+claude-orbit.md

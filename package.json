@@ -1,20 +1,43 @@
 {
   "name": "meowy-fooocus",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "Midjourney-style Discord bot for a self-hosted Fooocus server",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "dev": "tsx src/index.ts",
+    "watch": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "deploy": "tsx src/discord/deploy.ts",
+    "dump-config": "tsx scripts/dump-config.ts",
+    "smoke": "tsx scripts/smoke-generate.ts",
+    "test": "vitest run",
+    "lint": "eslint src scripts test",
+    "format": "prettier --write \"{src,scripts,test}/**/*.ts\""
   },
-  "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@gradio/client": "^0.1.4"
-  },
   "dependencies": {
-    "discord.js": "^14.12.1",
-    "dotenv": "^16.3.1",
-    "puppeteer": "^21.0.3"
+    "discord.js": "^14.27.0",
+    "dotenv": "^17.4.2",
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.3",
+    "sharp": "^0.35.4",
+    "ws": "^8.21.3",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/ws": "^8.18.1",
+    "eslint": "^10.10.0",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^5.0.0"
   }
 }
