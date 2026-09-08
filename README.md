@@ -2,6 +2,8 @@
 
 A Discord bot for a self-hosted [Fooocus](https://github.com/lllyasviel/Fooocus) server. Streams generation previews into Discord messages.
 
+![image](https://raw.githubusercontent.com/InfernoDragon0/Fooocus-Discord/refs/heads/master/samples/sample1.png)
+
 ## Features
 
 - `/imagine` text-to-image with model, styles, aspect ratio, performance, seed, LoRA, guidance and sharpness options (autocomplete for models, styles, LoRAs and aspect ratios).
@@ -49,7 +51,7 @@ Edit `config.json`:
 | `generation.defaultCount` / `maxCount` / `defaultPerformance` / `allowedModels` | Generation defaults;`allowedModels` restricts the checkpoints users may pick                                      |
 | `generation.defaultStyles`                                                            | Styles applied when the user gives none:`[]` for none, `null` for the Fooocus preset styles, or a list of names |
 | `generation.presetLoras`                                                              | `false` disables the LoRAs the Fooocus preset loads by default; a `lora` option still applies                   |
-| `discord.progressEditIntervalMs`                                                      | How often the progress message is edited (min 1000)                                                                 |
+| `discord.progressEditIntervalMs`                                                      | How often the progress message is edited (min 1000)<br />                                                           |
 | `discord.maxUploadBytes`                                                              | Upload cap; larger PNGs are re-encoded to JPEG for Discord                                                          |
 | `gpu.powerLimitWatts`                                                                 | NVIDIA power limit while the bot runs, or`null`                                                                   |
 | `gpu.method`                                                                          | `nvidia-smi` (bot relaunches itself elevated via UAC) or `scheduled-task` (see below)                           |
@@ -57,9 +59,9 @@ Edit `config.json`:
 | `tray.enabled`                                                                        | Tray icon on/off                                                                                                    |
 | `log.level`                                                                           | `trace` … `error`                                                                                              |
 
-Register commands with ```npm run deploy``` or ```npm run deploy -- --global```
+Register commands with ``npm run deploy`` or ``npm run deploy -- --global``
 
-Run with ```npm run dev```
+Run with ``npm run dev``
 
 If `gpu.powerLimitWatts` is set, the bot requires admin permissions (UAC)
 
